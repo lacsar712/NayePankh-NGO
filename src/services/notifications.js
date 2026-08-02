@@ -1,5 +1,6 @@
 import { db, isConfigured } from '../firebase/config';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { ADMIN_STORAGE_KEYS } from '../features/admin/constants/storageKeys';
 
 /**
  * Triggers an email notification to the admin at admintestsprojects@gmail.com
@@ -269,7 +270,7 @@ export async function sendAdminNotification(type, payload) {
 
   // Save fallback inside localStorage for local simulation testing
   try {
-    const existingLogs = JSON.parse(localStorage.getItem('naye_pankh_admin_notifications') || '[]');
+    const existingLogs = JSON.parse(localStorage.getItem(ADMIN_STORAGE_KEYS.ADMIN_NOTIFICATIONS) || '[]');
     existingLogs.unshift({
       id: 'notify-' + Date.now() + '-' + Math.random().toString(36).substring(2, 6),
       type,
@@ -278,7 +279,7 @@ export async function sendAdminNotification(type, payload) {
       recipient: adminEmail,
       timestamp: new Date().toISOString()
     });
-    localStorage.setItem('naye_pankh_admin_notifications', JSON.stringify(existingLogs));
+    localStorage.setItem(ADMIN_STORAGE_KEYS.ADMIN_NOTIFICATIONS, JSON.stringify(existingLogs));
     console.log(`[Notification Engine] Recorded local notification log to localStorage.`);
   } catch (err) {
     console.error("[Notification Engine] LocalStorage write error:", err);
