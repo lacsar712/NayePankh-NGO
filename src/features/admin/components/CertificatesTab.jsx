@@ -1,0 +1,142 @@
+// Admin UI layer — Certificates tab (branding asset upload + issued ledger)
+import { memo } from 'react';
+import { Award, Download } from 'lucide-react';
+
+function CertificatesTab({
+  certificates,
+  sigImage,
+  stampImage,
+  onUploadSignature,
+  onUploadStamp,
+  onResetAssets,
+  onDownload,
+}) {
+  return (
+    <div className="space-y-8">
+      {/* Asset Upload Section */}
+      <div className="bg-slate-50 border border-slate-250/60 p-6 rounded-2xl space-y-4">
+        <div>
+          <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider flex items-center space-x-1.5">
+            <Award className="h-4.5 w-4.5 text-primary-500" />
+            <span>Official Certificate Branding Assets</span>
+          </h3>
+          <p className="text-xs text-slate-500 mt-1">Upload the digital signature of the Founder and the Foundation stamp to be embedded on all generated certificates.</p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="bg-white border border-slate-200 p-4 rounded-xl space-y-3 shadow-sm flex flex-col justify-between">
+            <div>
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Founder's Digital Signature</label>
+              <p className="text-[10px] text-slate-400 mb-3">Upload a clean scanned signature. A white/transparent background works best.</p>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={onUploadSignature}
+                className="text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-[10px] file:font-bold file:bg-primary-50 file:text-primary-600 hover:file:bg-primary-100 cursor-pointer w-full"
+              />
+            </div>
+            {sigImage ? (
+              <div className="flex items-center justify-between mt-2 bg-slate-50 p-2 rounded-lg border border-slate-100">
+                <img src={sigImage} className="h-10 object-contain max-w-[150px] mix-blend-multiply" alt="Founder Signature" />
+                <span className="text-[10px] text-emerald-600 font-bold">✓ Signature Uploaded</span>
+              </div>
+            ) : (
+              <div className="text-[10px] text-slate-400 italic mt-2">No custom signature uploaded. Falling back to handwriting style font.</div>
+            )}
+          </div>
+
+          <div className="bg-white border border-slate-200 p-4 rounded-xl space-y-3 shadow-sm flex flex-col justify-between">
+            <div>
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Foundation Stamp</label>
+              <p className="text-[10px] text-slate-400 mb-3">Upload the official circular stamp image of the foundation.</p>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={onUploadStamp}
+                className="text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-[10px] file:font-bold file:bg-primary-50 file:text-primary-600 hover:file:bg-primary-100 cursor-pointer w-full"
+              />
+            </div>
+            {stampImage ? (
+              <div className="flex items-center justify-between mt-2 bg-slate-50 p-2 rounded-lg border border-slate-100">
+                <img src={stampImage} className="h-10 object-contain max-w-[100px] mix-blend-multiply" alt="Foundation Stamp" />
+                <span className="text-[10px] text-emerald-600 font-bold">✓ Stamp Uploaded</span>
+              </div>
+            ) : (
+              <div className="text-[10px] text-slate-400 italic mt-2">No custom stamp uploaded. Falling back to signature labels.</div>
+            )}
+          </div>
+        </div>
+
+        {(sigImage || stampImage) && (
+          <div className="flex justify-end">
+            <button
+              type="button"
+              onClick={onResetAssets}
+              className="text-xs font-bold text-red-500 hover:text-red-650 px-3 py-1.5 bg-red-50 hover:bg-red-100/50 rounded-lg border border-red-100 transition-colors cursor-pointer"
+            >
+              Reset to Default Assets
+            </button>
+          </div>
+        )}
+      </div>
+
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <h2 className="text-xl font-bold text-slate-900 font-display">Event Certificates Ledger</h2>
+          <span className="text-xs text-slate-400 font-bold uppercase">{certificates.length} Total Issued</span>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-sm border-collapse">
+            <thead>
+              <tr className="border-b border-slate-200 text-slate-500 font-bold">
+                <th className="pb-3 pr-4">Certificate ID</th>
+                <th className="pb-3 pr-4">Volunteer Info</th>
+                <th className="pb-3 pr-4">Event Campaign</th>
+                <th className="pb-3 pr-4">Hours / Date</th>
+                <th className="pb-3 text-right">Download</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {certificates.length === 0 ? (
+                <tr>
+                  <td colSpan="5" className="py-8 text-center text-slate-400 text-sm">
+                    No event certificates issued yet. Mark event registrations as attended to generate.
+                  </td>
+                </tr>
+              ) : (
+                [...certificates].reverse().map((cert, idx) => (
+                  <tr key={cert.certificateId || idx} className="hover:bg-slate-50/50">
+                    <td className="py-4 font-mono font-bold text-xs text-slate-600 uppercase">{cert.certificateId}</td>
+                    <td className="py-4 font-bold text-slate-800">
+                      <p>{cert.name}</p>
+                      <p className="text-slate-400 text-xs font-normal">{cert.email}</p>
+                    </td>
+                    <td className="py-4">
+                      <span className="px-2.5 py-1 rounded-full text-xs font-bold uppercase bg-emerald-50 text-emerald-600 border border-emerald-100">
+                        {cert.eventTitle}
+                      </span>
+                    </td>
+                    <td className="py-4 text-xs text-slate-500 space-y-0.5">
+                      <p className="font-bold text-slate-700">{cert.hours} Hours Logged</p>
+                      <p>{cert.date}</p>
+                    </td>
+                    <td className="py-4 text-right">
+                      <button
+                        onClick={() => onDownload(cert)}
+                        className="text-xs font-bold text-primary-600 hover:text-primary-700 bg-primary-50 border border-primary-100 px-3 py-1.5 rounded-lg transition-colors inline-flex items-center space-x-1 cursor-pointer"
+                      >
+                        <Download className="h-3.5 w-3.5" />
+                        <span>Download</span>
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default memo(CertificatesTab);
