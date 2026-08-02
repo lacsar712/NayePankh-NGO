@@ -1,0 +1,13 @@
+services:
+  frontend:
+    build: .
+    container_name: nayepankh-frontend
+    restart: unless-stopped
+    ports:
+      - "3071:80"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

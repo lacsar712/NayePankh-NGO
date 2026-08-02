@@ -1,0 +1,14 @@
+node_modules
+dist
+dist-ssr
+.git
+.gitignore
+*.md
+.env
+.env.*
+*.log
+.vscode
+.idea
+.DS_Store
+eslint.config.js
+test-events-read.js
